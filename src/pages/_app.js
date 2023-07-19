@@ -27,7 +27,7 @@ const App = (props) => {
     <CacheProvider value={emotionCache}>
       <Head>
         <title>
-          Devias Kit
+          One Agno Medical Solutions Cash Voucher System
         </title>
         <meta
           name="viewport"

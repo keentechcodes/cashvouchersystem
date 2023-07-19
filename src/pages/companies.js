@@ -71,7 +71,7 @@ const Page = () => (
   <>
     <Head>
       <title>
-        Companies | Devias Kit
+        Companies | One Agno Medical Solutions
       </title>
     </Head>
     <Box

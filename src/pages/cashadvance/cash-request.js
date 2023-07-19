@@ -1,14 +1,13 @@
 import Head from 'next/head';
 import { Box, Container, Stack, Typography, Unstable_Grid2 as Grid } from '@mui/material';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
-import { AccountProfile } from 'src/sections/account/account-profile';
-import { AccountProfileDetails } from 'src/sections/account/account-profile-details';
+import CashRequestForm from 'src/sections/advancerequest/CashRequestForm';
 
 const Page = () => (
   <>
     <Head>
       <title>
-        Account | One Agno Medical Solutions
+        Cash Advance Request Form | One Agno Medical Solutions
       </title>
     </Head>
     <Box
@@ -18,31 +17,30 @@ const Page = () => (
         py: 8
       }}
     >
-      <Container maxWidth="lg">
+      <Container 
+      maxWidth="lg" 
+      sx={{ width: '100%' }}>
         <Stack spacing={3}>
           <div>
             <Typography variant="h4">
-              Account
+              Cash Advance Request
             </Typography>
           </div>
           <div>
-            <Grid
-              container
-              spacing={3}
-            >
-              <Grid
-                xs={12}
-                md={6}
-                lg={4}
-              >
-                <AccountProfile />
+            <Grid 
+            container 
+            spacing={3}>
+              <Grid 
+              xs={12} 
+              md={12} 
+              lg={12}>
+                <CashRequestForm />
               </Grid>
-              <Grid
-                xs={12}
-                md={6}
-                lg={8}
-              >
-                <AccountProfileDetails />
+              <Grid 
+              xs={12} 
+              md={12} 
+              lg={12}>
+                {/* table goes here */}
               </Grid>
             </Grid>
           </div>

@@ -6,6 +6,10 @@ import UserIcon from '@heroicons/react/24/solid/UserIcon';
 import UserPlusIcon from '@heroicons/react/24/solid/UserPlusIcon';
 import UsersIcon from '@heroicons/react/24/solid/UsersIcon';
 import XCircleIcon from '@heroicons/react/24/solid/XCircleIcon';
+import ClipboardDocumentListIcon from '@heroicons/react/24/solid/ClipboardDocumentListIcon';
+
+
+
 import { SvgIcon } from '@mui/material';
 
 export const items = [
@@ -19,23 +23,107 @@ export const items = [
     )
   },
   {
-    title: 'Customers',
-    path: '/customers',
+    title: 'Material Request',
     icon: (
       <SvgIcon fontSize="small">
         <UsersIcon />
       </SvgIcon>
-    )
+    ),
+     subItems: [
+      {
+        title: 'Purchase Request',
+        path: '/materialrequest/purchase-request',
+        icon: (
+          <SvgIcon fontSize="small">
+            <ClipboardDocumentListIcon />
+          </SvgIcon>
+        )
+      },
+      {
+        title: 'Purchase Order',
+        path: '/materialrequest/purchase-order',
+        icon: (
+          <SvgIcon fontSize="small">
+            <ClipboardDocumentListIcon />
+          </SvgIcon>
+        )
+      },
+      {
+        title: 'Voucher',
+        path: '/materialrequest/material-voucher',
+        icon: (
+          <SvgIcon fontSize="small">
+            <ClipboardDocumentListIcon />
+          </SvgIcon>
+        )
+      }
+    ]
   },
   {
-    title: 'Companies',
-    path: '/companies',
+    title: 'Cash Reimbursement',
     icon: (
       <SvgIcon fontSize="small">
-        <ShoppingBagIcon />
+        <UsersIcon />
       </SvgIcon>
-    )
+    ),
+     subItems: [
+      {
+        title: 'Reimbursement Request',
+        path: '/cashreimbursement/cash-request',
+        icon: (
+          <SvgIcon fontSize="small">
+            <ClipboardDocumentListIcon />
+          </SvgIcon>
+        )
+      },
+      {
+        title: 'Voucher',
+        path: '/cashreimbursement/reimbursement-voucher',
+        icon: (
+          <SvgIcon fontSize="small">
+            <ClipboardDocumentListIcon />
+          </SvgIcon>
+        )
+      }
+    ]
   },
+  {
+    title: 'Cash Advance',
+    icon: (
+      <SvgIcon fontSize="small">
+        <UsersIcon />
+      </SvgIcon>
+    ),
+     subItems: [
+      {
+        title: 'Advance Request',
+        path: '/cashadvance/cash-request',
+        icon: (
+          <SvgIcon fontSize="small">
+            <ClipboardDocumentListIcon />
+          </SvgIcon>
+        )
+      },
+      {
+        title: 'Voucher',
+        path: '/cashadvance/advance-voucher',
+        icon: (
+          <SvgIcon fontSize="small">
+            <ClipboardDocumentListIcon />
+          </SvgIcon>
+        )
+      }
+    ]
+  },
+  // {
+  //   title: 'Companies',
+  //   path: '/companies',
+  //   icon: (
+  //     <SvgIcon fontSize="small">
+  //       <ShoppingBagIcon />
+  //     </SvgIcon>
+  //   )
+  // },
   {
     title: 'Account',
     path: '/account',
@@ -72,7 +160,7 @@ export const items = [
       </SvgIcon>
     )
   },
-  {
+/*   {
     title: 'Error',
     path: '/404',
     icon: (
@@ -80,5 +168,7 @@ export const items = [
         <XCircleIcon />
       </SvgIcon>
     )
-  }
+  } */
 ];
+
+

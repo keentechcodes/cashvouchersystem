@@ -8,7 +8,7 @@ const Page = () => (
   <>
     <Head>
       <title>
-        Settings | Devias Kit
+        Settings | One Agno Medical Solutions
       </title>
     </Head>
     <Box

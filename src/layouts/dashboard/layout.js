@@ -20,8 +20,12 @@ const LayoutContainer = styled('div')({
   display: 'flex',
   flex: '1 1 auto',
   flexDirection: 'column',
-  width: '100%'
+  width: '100%',
+  maxWidth: '90%',  // Set a max width
+  marginLeft: 'auto',  // Center content
+  marginRight: 'auto',  // Center content
 });
+
 
 export const Layout = withAuthGuard((props) => {
   const { children } = props;
