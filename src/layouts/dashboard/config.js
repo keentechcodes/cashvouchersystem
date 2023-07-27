@@ -22,6 +22,15 @@ export const items = [
       </SvgIcon>
     )
   },
+   {
+    title: 'Petty Cash System',
+    path: '/petty-cash',
+    icon: (
+      <SvgIcon fontSize="small">
+        <UsersIcon />
+      </SvgIcon>
+    )
+  },
   {
     title: 'Material Request',
     icon: (
@@ -69,7 +78,7 @@ export const items = [
      subItems: [
       {
         title: 'Reimbursement Request',
-        path: '/cashreimbursement/cash-request',
+        path: '/cashreimbursement/cash-return',
         icon: (
           <SvgIcon fontSize="small">
             <ClipboardDocumentListIcon />

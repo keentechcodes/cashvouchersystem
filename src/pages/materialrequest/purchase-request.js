@@ -8,7 +8,7 @@ const Page = () => (
     <>
     <Head>
         <title>
-            Material Request Form | One Agno Medical Solutions
+            Material Request | One Agno Medical Solutions
         </title>
     </Head>
     <Box 
@@ -22,7 +22,7 @@ const Page = () => (
             <Stack spacing={3}>
                 <div>
                     <Typography variant="h4">
-                        Material Request Form
+                        Material Request
                     </Typography>
                 </div>
                 <div>

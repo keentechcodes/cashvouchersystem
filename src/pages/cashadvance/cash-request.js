@@ -2,6 +2,9 @@ import Head from 'next/head';
 import { Box, Container, Stack, Typography, Unstable_Grid2 as Grid } from '@mui/material';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
 import CashRequestForm from 'src/sections/advancerequest/CashRequestForm';
+import SalaryDeductionTable from 'src/sections/advancerequest/SalaryDeductionTable';
+
+
 
 const Page = () => (
   <>
@@ -40,7 +43,7 @@ const Page = () => (
               xs={12} 
               md={12} 
               lg={12}>
-                {/* table goes here */}
+                <SalaryDeductionTable />
               </Grid>
             </Grid>
           </div>
