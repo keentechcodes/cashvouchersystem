@@ -17,10 +17,12 @@ import {
 } from '@mui/material';
 
 const ExpenseForm = () => {
-  const [name, setName] = useState('John Doe');
+  const [name, setName] = useState('Anika Visser');
   const [area, setArea] = useState('');
   const [dateRange, setDateRange] = useState([null, null]);
   const [today, setToday] = useState(new Date());
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
   const [fields, setFields] = useState([
     {
       mainLocation: '',
@@ -138,14 +140,78 @@ const removeSubLocation = (mainIndex, subIndex) => {
     return grandTotal;
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Submit form logic here
-    console.log('Submitted');
-  };
+  const handleSubmit = async (event) => {
+  event.preventDefault();
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Basic form validation
+  if (!name || !area || !dateRange[0] || !dateRange[1]) {
+    setErrorMessage('Please fill out all required fields!');
+    return;
+  } else {
+    setErrorMessage(null);
+  }
+
+  try {
+    const response = await fetch('http://localhost:5000/reimbursements', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ name, area, dateRange, today, fields }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const jsonResponse = await response.json();
+
+    // Display success message
+    setSuccessMessage('Form submitted successfully!');
+
+    // Clear the form
+    setName('John Doe');
+    setArea('');
+    setDateRange([null, null]);
+    setToday(new Date());
+    setFields([
+      {
+        mainLocation: '',
+        date: null,
+        subLocations: [
+          {
+            subLocationName: '',
+            expenses: [
+              {
+                expenseType: '',
+                transportationType: '',
+                expenseAmount: 0,
+              },
+            ],
+          },
+        ],
+        total: 0,
+      },
+    ]);
+  } catch (error) {
+    console.log('There was a problem with your fetch operation: ', error);
+  }
+};
 
   return (
     <Box component='form' onSubmit={handleSubmit}>
+      {errorMessage && (
+      <Typography variant='body1' color='error'>
+        {errorMessage}
+      </Typography>
+    )}
+    {successMessage && (
+      <Typography variant='body1' color='success.main'>
+        {successMessage}
+      </Typography>
+    )}
       <Card>
         <CardHeader title='Expense Report Form' />
         <Divider />

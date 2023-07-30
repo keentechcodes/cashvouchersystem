@@ -1,14 +1,13 @@
 import Head from 'next/head';
 import { Box, Container, Stack, Typography, Unstable_Grid2 as Grid } from '@mui/material';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
-import ExpenseForm from 'src/sections/reimbursementrequest/ExpenseForm';
 import PastExpenses from 'src/sections/reimbursementrequest/PastExpenses';
 
 const Page = () => (
     <>
     <Head>
         <title>
-            Cash Reimbursement | One Agno Medical Solutions
+            Expenses | One Agno Medical Solutions
         </title>
     </Head>
     <Box 
@@ -33,7 +32,7 @@ const Page = () => (
                         xs={12}
                         md={12}
                         lg={12}>
-                            <ExpenseForm />
+                            <PastExpenses />
                         </Grid>
                         <Grid
                         xs={12}

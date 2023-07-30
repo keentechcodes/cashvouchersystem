@@ -125,6 +125,13 @@ router.get('/:id', async (req, res) => {
 router.put('/:id/approve', async (req, res) => {
   const { id } = req.params;
   try {
+    // Check if there is already a purchase order for this request
+    const checkOrderResult = await pool.query('SELECT * FROM material_request_purchase_orders WHERE material_request_id = $1', [id]);
+    if (checkOrderResult.rows.length > 0) {
+      res.status(400).json({ message: "Purchase order already exists for this request" });
+      return;
+    }
+
     // Mark the material request as approved
     const updateResult = await pool.query('UPDATE material_requests SET status = $1 WHERE id = $2', ['approved', id]);
     if (updateResult.rowCount === 0) {
@@ -135,15 +142,13 @@ router.put('/:id/approve', async (req, res) => {
     // Create a new purchase order
     const poResult = await pool.query('INSERT INTO material_request_purchase_orders (material_request_id, date) VALUES ($1, NOW()) RETURNING id', [id]);
     const poId = poResult.rows[0].id;
-
-    // Also, update the status of the order to "approved"
-    await pool.query('UPDATE material_requests SET status = $1 WHERE id = $2', ['approved', id]);
-
+    
     res.status(200).json({ poId: poId });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 
 router.put('/po/:id/convert', async (req, res) => {

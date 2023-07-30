@@ -7,6 +7,7 @@ const pool = require('./db'); // make sure this path leads to your db.js file
 // import routes
 const materialRequestRoutes = require('./routes/materialRequestRoutes');
 const pettyCashRoutes = require('./routes/pettyCashRoutes');
+const reimbursementRoutes = require('./routes/reimbursementRoutes');
 
 // initialize express app
 const app = express();
@@ -18,6 +19,7 @@ app.use(bodyParser.json());
 // apis
 app.use('/api/material_requests', materialRequestRoutes);
 app.use('/petty-cash', pettyCashRoutes);
+app.use('/reimbursements', reimbursementRoutes);
 
 // API endpoint for getting approved orders of material requests
 app.get('/approved_orders', async (req, res) => {

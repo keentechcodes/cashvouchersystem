@@ -36,12 +36,13 @@ const handleOrderSelect = async (order) => {
   const handleCreateVoucher = async (order) => {
   try {
     // Create voucher here
-    const response = await axios.put(`http://localhost:5000/api/material_requests/po/${order.id}/convert`);
+    const response = await axios.put(`http://localhost:5000/api/material_requests/po/${order.purchase_order_id}/convert`);
     console.log(`Voucher created for order ${order.id} with voucherId ${response.data.voucherId}`);
   } catch (error) {
     console.error('Error creating voucher:', error);
   }
 };
+
 
 
   return (

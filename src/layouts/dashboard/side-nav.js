@@ -77,12 +77,6 @@ export const SideNav = (props) => {
               >
                   One Agno Medical Solutions
               </Typography>
-              <Typography
-                color="neutral.400"
-                variant="body2"
-              >
-                Production
-              </Typography>
             </div>
             <SvgIcon
               fontSize="small"

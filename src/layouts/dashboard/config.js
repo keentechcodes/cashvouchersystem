@@ -19,6 +19,8 @@ import CircleStackIcon from '@heroicons/react/24/solid/CircleStackIcon';
 import WalletIcon from '@heroicons/react/24/solid/WalletIcon';
 //For material request
 import ClipboardDocumentListIcon from '@heroicons/react/24/solid/ClipboardDocumentListIcon';
+// Expenses
+import TableCellsIcon from '@heroicons/react/24/solid/TableCellsIcon';
 
 
 
@@ -98,11 +100,11 @@ export const items = [
         )
       },
       {
-        title: 'Voucher',
-        path: '/cashreimbursement/reimbursement-voucher',
+        title: 'Expenses',
+        path: '/cashreimbursement/past-expenses',
         icon: (
           <SvgIcon fontSize="small">
-            <DocumentIcon />
+            <TableCellsIcon />
           </SvgIcon>
         )
       }

@@ -85,3 +85,42 @@ CREATE TABLE cash_advance_requests (
   status VARCHAR(20)
 );
 
+-- reimbursements_requests table
+CREATE TABLE reimbursements_requests (
+    id SERIAL PRIMARY KEY,
+    area VARCHAR(255),
+    period_start DATE,
+    period_end DATE,
+    today DATE
+);
+
+-- reimbursements_main_locations table
+CREATE TABLE reimbursements_main_locations (
+    id SERIAL PRIMARY KEY,
+    reimbursement_request_id INT NOT NULL,
+    location_name VARCHAR(255),
+    date DATE,
+    FOREIGN KEY (reimbursement_request_id) REFERENCES reimbursements_requests (id) ON DELETE CASCADE
+);
+
+-- reimbursements_sub_locations table
+CREATE TABLE reimbursements_sub_locations (
+    id SERIAL PRIMARY KEY,
+    main_location_id INT NOT NULL,
+    sub_location_name VARCHAR(255),
+    FOREIGN KEY (main_location_id) REFERENCES reimbursements_main_locations (id) ON DELETE CASCADE
+);
+
+-- reimbursements_expenses table
+CREATE TABLE reimbursements_expenses (
+    id SERIAL PRIMARY KEY,
+    sub_location_id INT NOT NULL,
+    expense_type VARCHAR(255),
+    transportation_type VARCHAR(255),
+    expense_amount DECIMAL(10,2),
+    FOREIGN KEY (sub_location_id) REFERENCES reimbursements_sub_locations (id) ON DELETE CASCADE
+);
+
+
+
+
