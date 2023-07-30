@@ -62,7 +62,7 @@ const Page = () => {
   const handleSkip = useCallback(
     () => {
       auth.skip();
-      router.push('/');
+      router.push('/petty-cash');
     },
     [auth, router]
   );

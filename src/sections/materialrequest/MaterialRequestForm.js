@@ -148,7 +148,7 @@ const handleSubmit = async (e) => {
                                         <TableCell>Qty</TableCell>
                                         <TableCell>Unit</TableCell>
                                         <TableCell>Item Specification</TableCell>
-                                        <TableCell>Amount</TableCell>
+                                        <TableCell>Amount (₱)</TableCell>
                                         <TableCell></TableCell>
                                     </TableRow>
                                 </TableHead>

@@ -8,7 +8,11 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "next start",
+    "start": "concurrently \"npm run start:frontend\" \"npm run start:backend1\" \"npm run start:backend2\" \"npm run start:backend3\"",
+    "start:frontend": "npm run dev",
+    "start:backend1": "nodemon app.js",
+    "start:backend2": "nodemon pettyCashRoutes.js",
+    "start:backend3": "nodemon cashAdvanceRoutes.js",
     "export": "next export",
     "lint": "next lint",
     "lint-fix": "next lint --fix"
@@ -51,6 +55,7 @@
     "@types/numeral": "2.0.2",
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.11",
+    "concurrently": "^8.2.0",
     "eslint": "8.34.0",
     "eslint-config-next": "13.1.6"
   }

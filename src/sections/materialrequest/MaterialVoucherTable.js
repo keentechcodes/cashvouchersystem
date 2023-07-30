@@ -1,22 +1,42 @@
-import { useState } from 'react';
-import { Box, Card, CardContent, CardHeader, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography } from '@mui/material';
+import { useState, useEffect } from 'react';
+import { Box, Card, CardContent, CardHeader, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, CircularProgress } from '@mui/material';
+import axios from 'axios'; // Make sure axios is installed
 
 const MaterialVoucherTable = () => {
-  const [vouchers, setVouchers] = useState([
-    { 
-        id: 'V1234', date: '2023-07-25', requester: 'John Doe', 
-        designation: 'Designation 1', branch: 'Branch 1', reason: 'Reason 1',
-        items: [{ qty: "1", unit: "Box", specification: "Pens", amount: "100" }, { qty: "2", unit: "Packs", specification: "Notebooks", amount: "100" }],
-        total: '6000'
-    },
-    // add more mock data as needed
-  ]);
-
+  const [vouchers, setVouchers] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selectedVoucher, setSelectedVoucher] = useState(null);
+
+  useEffect(() => {
+    axios.get('http://localhost:5000/api/material_requests/vouchers')
+      .then(res => {
+        // Group the result by voucher_id
+        const groupedData = res.data.reduce((groupedVouchers, row) => {
+          (groupedVouchers[row.voucher_id] = groupedVouchers[row.voucher_id] || []).push(row);
+          return groupedVouchers;
+        }, {});
+
+        const vouchersArray = Object.values(groupedData).map(voucherRows => {
+          const { voucher_id, voucher_date, requester, request_date, designation, branch, reason, request_total } = voucherRows[0];
+          const items = voucherRows.map(({ qty, unit, specification, item_amount }) => ({ qty, unit, specification, amount: item_amount }));
+          return { id: voucher_id, date: voucher_date, requester, request_date, designation, branch, reason, total: request_total, items };
+        });
+
+        setVouchers(vouchersArray);
+        setLoading(false);
+      })
+      .catch(err => console.log(err));
+  }, []);
 
   const handleClose = () => {
     setSelectedVoucher(null);
   };
+
+  const handleVoucherSelect = (voucher) => {
+    setSelectedVoucher(voucher);
+  };
+
+  if (loading) return <CircularProgress />; // Show loading indicator while data is being fetched
 
   return (
     <Card sx={{ width: '100%', mt: 2 }}>
@@ -47,10 +67,10 @@ const MaterialVoucherTable = () => {
                   <TableCell>{voucher.designation}</TableCell>
                   <TableCell>{voucher.branch}</TableCell>
                   <TableCell>{voucher.reason}</TableCell>
-                  <TableCell>{voucher.items.map(item => `${item.qty} ${item.unit} ${item.specification} @ ₱${item.amount}`).join(', ')}</TableCell>
+                  <TableCell>{voucher.items ? voucher.items.map(item => `${item.qty} ${item.unit} ${item.specification} @ ₱${item.amount}`).join(', ') : 'No items available'}</TableCell>
                   <TableCell>₱{voucher.total}</TableCell>
                   <TableCell>
-                    <Button variant="outlined" color="primary" onClick={() => setSelectedVoucher(voucher)}>View</Button>
+                    <Button variant="outlined" color="primary" onClick={() => handleVoucherSelect(voucher)}>View</Button>
                   </TableCell>
                 </TableRow>
               ))}

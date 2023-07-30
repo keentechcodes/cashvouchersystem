@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { Collapse, List, ListItemButton, ListItemText, ListItemIcon } from '@mui/material';
+import { Collapse, List, Box, ButtonBase } from '@mui/material';
 import { useState } from 'react';
 import SideNavSubItem from './side-nav-sub-item';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -14,11 +14,64 @@ const SideNavItemWithSub = ({ title, path, icon, subItems, active }) => {
 
   return (
     <div>
-      <ListItemButton onClick={handleClick}>
-        <ListItemIcon>{icon}</ListItemIcon>
-        <ListItemText primary={title} />
-        {open ? <ExpandMoreIcon /> : <ChevronRightIcon />}
-      </ListItemButton>
+      <li>
+        <ButtonBase
+          onClick={handleClick}
+          sx={{
+            alignItems: 'center',
+            borderRadius: 1,
+            display: 'flex',
+            justifyContent: 'flex-start',
+            pl: '16px',
+            pr: '16px',
+            py: '6px',
+            textAlign: 'left',
+            width: '100%',
+            ...(active && {
+              backgroundColor: 'rgba(255, 255, 255, 0.04)'
+            }),
+            '&:hover': {
+              backgroundColor: 'rgba(255, 255, 255, 0.04)'
+            }
+          }}
+        >
+          {icon && (
+            <Box
+              component="span"
+              sx={{
+                alignItems: 'center',
+                color: 'neutral.400',
+                display: 'inline-flex',
+                justifyContent: 'center',
+                mr: 2,
+                ...(active && {
+                  color: 'primary.main'
+                })
+              }}
+            >
+              {icon}
+            </Box>
+          )}
+          <Box
+            component="span"
+            sx={{
+              color: 'neutral.400',
+              flexGrow: 1,
+              fontFamily: (theme) => theme.typography.fontFamily,
+              fontSize: 14,
+              fontWeight: 600,
+              lineHeight: '24px',
+              whiteSpace: 'nowrap',
+              ...(active && {
+                color: 'common.white'
+              }),
+            }}
+          >
+            {title}
+          </Box>
+          {open ? <ExpandMoreIcon /> : <ChevronRightIcon />}
+        </ButtonBase>
+      </li>
       <Collapse in={open} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           {subItems.map((item) => (

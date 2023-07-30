@@ -80,8 +80,8 @@ export const RecordExpensesDetails = () => {
 
         // Implement the fetch request here for recording expenses
         // For example, you can use a different URL or endpoint specific to recording expenses
-        // Replace 'http://localhost:5000/record-expenses' with the appropriate URL
-        const response = await fetch('http://localhost:5000/record-expenses', {
+        // Replace 'http://localhost:3001/record-expenses' with the appropriate URL
+        const response = await fetch('http://localhost:3001/record-expenses', {
           method: 'POST',
           body: formData,
         });

@@ -27,7 +27,9 @@ router.get('/', async (req, res) => {
   try {
     const requestsResult = await pool.query('SELECT * FROM material_requests');
     const itemsResult = await pool.query('SELECT * FROM material_request_items');
-    
+    const poResult = await pool.query('SELECT * FROM material_request_purchase_orders');
+    const voucherResult = await pool.query('SELECT * FROM material_request_vouchers');
+
     const itemsById = itemsResult.rows.reduce((obj, item) => {
       if (!obj[item.material_request_id]) {
         obj[item.material_request_id] = [];
@@ -36,17 +38,71 @@ router.get('/', async (req, res) => {
       return obj;
     }, {});
 
-    const requestsWithItems = requestsResult.rows.map(request => ({
-      ...request,
-      items: itemsById[request.id] || []
-    }));
+    const poById = poResult.rows.reduce((obj, po) => {
+      if (!obj[po.material_request_id]) {
+        obj[po.material_request_id] = [];
+      }
+      obj[po.material_request_id].push(po);
+      return obj;
+    }, {});
 
-    res.status(200).json(requestsWithItems);
+    const voucherByPOId = voucherResult.rows.reduce((obj, voucher) => {
+      if (!obj[voucher.purchase_order_id]) {
+        obj[voucher.purchase_order_id] = [];
+      }
+      obj[voucher.purchase_order_id].push(voucher);
+      return obj;
+    }, {});
+
+    const requestsWithItemsAndPOsAndVouchers = requestsResult.rows.map(request => {
+      const pos = poById[request.id] || [];
+      const posWithVouchers = pos.map(po => ({ ...po, vouchers: voucherByPOId[po.id] || [] }));
+
+      return {
+        ...request,
+        items: itemsById[request.id] || [],
+        purchase_orders: posWithVouchers,
+      };
+    });
+
+    res.status(200).json(requestsWithItemsAndPOsAndVouchers);
   } catch (error) {
     res.status(500).json({ error: error.message });
     console.log(error.message);
   }
 });
+
+router.get('/vouchers', async (req, res) => {
+  try {
+    const query = `
+      SELECT
+        v.id as voucher_id,
+        v.date as voucher_date,
+        mr.requestor as requester,
+        mr.date as request_date,
+        mr.designation,
+        mr.branch,
+        mr.reason,
+        mr.total as request_total,
+        mri.qty,
+        mri.unit,
+        mri.specification,
+        mri.amount as item_amount
+      FROM material_request_vouchers v
+      JOIN material_request_purchase_orders po ON v.purchase_order_id = po.id
+      JOIN material_requests mr ON po.material_request_id = mr.id
+      JOIN material_request_items mri ON mri.material_request_id = mr.id
+    `;
+
+    const { rows } = await pool.query(query);
+
+    res.json(rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
 
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
@@ -161,6 +217,59 @@ router.delete('/:id', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+  router.get('/approved', async (req, res) => {
+  try {
+    const requestsResult = await pool.query('SELECT * FROM material_requests WHERE status = $1', ['approved']);
+    const itemsResult = await pool.query('SELECT * FROM material_request_items');
+    const poResult = await pool.query('SELECT * FROM material_request_purchase_orders');
+    const voucherResult = await pool.query('SELECT * FROM material_request_vouchers');
+
+    const itemsById = itemsResult.rows.reduce((obj, item) => {
+      if (!obj[item.material_request_id]) {
+        obj[item.material_request_id] = [];
+      }
+      obj[item.material_request_id].push(item);
+      return obj;
+    }, {});
+
+    const poById = poResult.rows.reduce((obj, po) => {
+      if (!obj[po.material_request_id]) {
+        obj[po.material_request_id] = [];
+      }
+      obj[po.material_request_id].push(po);
+      return obj;
+    }, {});
+
+    const voucherByPOId = voucherResult.rows.reduce((obj, voucher) => {
+      if (!obj[voucher.purchase_order_id]) {
+        obj[voucher.purchase_order_id] = [];
+      }
+      obj[voucher.purchase_order_id].push(voucher);
+      return obj;
+    }, {});
+
+    const requestsWithItemsAndPOsAndVouchers = requestsResult.rows.map(request => {
+      const pos = poById[request.id] || [];
+      const posWithVouchers = pos.map(po => ({ ...po, vouchers: voucherByPOId[po.id] || [] }));
+
+      return {
+        ...request,
+        items: itemsById[request.id] || [],
+        purchase_orders: posWithVouchers,
+      };
+    });
+
+    res.status(200).json(requestsWithItemsAndPOsAndVouchers);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+    console.log(error.message);
+  }
+  
+});
+
+
+
 
 
 

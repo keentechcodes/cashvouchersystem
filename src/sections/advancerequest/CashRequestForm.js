@@ -13,10 +13,10 @@ import {
   Typography,
   MenuItem
 } from '@mui/material';
-import { useAuth } from 'src/hooks/use-auth';
 
 export const CashRequestForm = () => {
   const [values, setValues] = useState({
+    name: '',
     dateBorrowed: '',
     designation: '',
     amount: '',
@@ -24,7 +24,6 @@ export const CashRequestForm = () => {
     note: false,
     customTerms: ''
   });
-  const auth = useAuth();
 
   const handleChange = (event) => {
     setValues({
@@ -37,9 +36,29 @@ export const CashRequestForm = () => {
     setValues({ ...values, [event.target.name]: event.target.checked });
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(values);
+    try {
+      // Make the POST request to the backend route with form data
+      const response = await fetch('http://localhost:3002/api/submit-cash-advance', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      // Handle the response (you can show a success message, redirect, etc.)
+      const data = await response.json();
+      console.log('Response from server:', data);
+    } catch (error) {
+      // Handle any errors that occur during the request
+      console.error('Error submitting form:', error);
+    }
   };
 
   const termsOptions = [
@@ -61,15 +80,13 @@ export const CashRequestForm = () => {
         <CardContent>
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
-              <TextField
+            <TextField
                 fullWidth
                 label="Name"
                 name="name"
-                value={auth.user.name}
-                InputProps={{
-                  readOnly: true,
-                }}
                 variant="outlined"
+                value={values.name}
+                onChange={handleChange} // Add this to update the name in the state
               />
             </Grid>
             <Grid item xs={12} md={6}>

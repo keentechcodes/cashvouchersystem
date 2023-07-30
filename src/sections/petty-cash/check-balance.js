@@ -70,7 +70,7 @@ export const CheckBalance = (props) => {
 
   const fetchRecordExpenses = async () => {
     try {
-      const response = await fetch('http://localhost:5000/record-expenses'); // Replace the URL with the correct endpoint for fetching record_expenses data
+      const response = await fetch('http://localhost:3001/record-expenses'); // Replace the URL with the correct endpoint for fetching record_expenses data
       const data = await response.json();
   
       // Check if data is an array
@@ -88,7 +88,7 @@ export const CheckBalance = (props) => {
 
   const fetchCheckBalance = async () => {
     try {
-      const response = await fetch('http://localhost:5000/check-balance');
+      const response = await fetch('http://localhost:3001/check-balance');
       const data = await response.json();
 
       // Check if data.chartSummaryData is an array
@@ -120,7 +120,7 @@ export const CheckBalance = (props) => {
 
   const fetchAddCashEntries = async () => {
     try {
-      const response = await fetch('http://localhost:5000/add-cash-entries');
+      const response = await fetch('http://localhost:3001/add-cash-entries');
       const data = await response.json();
 
       // Check if data is an array
@@ -146,7 +146,7 @@ export const CheckBalance = (props) => {
 
   const deleteCashEntry = async (entryId) => {
     try {
-      const response = await fetch(`http://localhost:5000/delete-cash-entry/${entryId}`, {
+      const response = await fetch(`http://localhost:3001/delete-cash-entry/${entryId}`, {
         method: 'DELETE',
       });
   
@@ -171,7 +171,7 @@ export const CheckBalance = (props) => {
 
   const deleteRecordExpense = async (entryId) => {
     try {
-      const response = await fetch(`http://localhost:5000/delete-record-expense/${entryId}`, {
+      const response = await fetch(`http://localhost:3001/delete-record-expense/${entryId}`, {
         method: 'DELETE',
       });
 

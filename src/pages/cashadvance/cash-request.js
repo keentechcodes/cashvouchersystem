@@ -3,6 +3,7 @@ import { Box, Container, Stack, Typography, Unstable_Grid2 as Grid } from '@mui/
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
 import CashRequestForm from 'src/sections/advancerequest/CashRequestForm';
 import SalaryDeductionTable from 'src/sections/advancerequest/SalaryDeductionTable';
+import CashAdvanceTable from 'src/sections/advancerequest/CashAdvanceTable';
 
 
 
@@ -43,7 +44,13 @@ const Page = () => (
               xs={12} 
               md={12} 
               lg={12}>
-                <SalaryDeductionTable />
+                {/*<SalaryDeductionTable />*/}
+              </Grid>
+              <Grid 
+              xs={12} 
+              md={12} 
+              lg={12}>
+                <CashAdvanceTable />
               </Grid>
             </Grid>
           </div>

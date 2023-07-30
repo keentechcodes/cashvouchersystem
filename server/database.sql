@@ -72,3 +72,16 @@ CREATE TABLE material_request_vouchers (
   FOREIGN KEY (purchase_order_id) REFERENCES material_request_purchase_orders (id) ON DELETE CASCADE
 );
 
+-- cash advance request table
+CREATE TABLE cash_advance_requests (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  date_borrowed DATE NOT NULL,
+  designation VARCHAR(100) NOT NULL,
+  amount NUMERIC NOT NULL,
+  terms VARCHAR(100) NOT NULL,
+  note BOOLEAN NOT NULL,
+  custom_terms INTEGER
+  status VARCHAR(20)
+);
+

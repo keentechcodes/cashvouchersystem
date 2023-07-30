@@ -70,7 +70,7 @@ export const AddCashDetails = () => {
         formData.append('selectedFile', selectedFile); // Append the file to the FormData
         formData.append('cashCategory', values.cashCategory); // Correctly append cashCategory
 
-        const response = await fetch("http://localhost:5000/petty-cash", {
+        const response = await fetch("http://localhost:3001/petty-cash", {
           method: "POST",
           body: formData, // Use the FormData as the request body
         });
