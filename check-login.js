@@ -6,7 +6,7 @@ const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
   database: 'cashvouchersystem',
-  password: 'secretpassword',
+  password: '12345',
   port: 5432,
 });
 
