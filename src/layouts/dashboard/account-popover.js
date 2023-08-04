@@ -2,11 +2,16 @@ import { useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import PropTypes from 'prop-types';
 import { Box, Divider, MenuItem, MenuList, Popover, Typography } from '@mui/material';
+<<<<<<< HEAD
 import { useAuth } from 'src/hooks/use-auth'; // Import useAuthContext
+=======
+import { useAuth } from 'src/hooks/use-auth';
+>>>>>>> f2c0da94f41ff23ab30a6bedc8aec818b4da28de
 
 export const AccountPopover = (props) => {
   const { anchorEl, onClose, open } = props;
   const router = useRouter();
+<<<<<<< HEAD
   const { user, signOut } = useAuth(); // Access the user data and signOut function from the authentication context
 
   console.log('user:', user); // Log the user data to see if it's available
@@ -20,6 +25,17 @@ export const AccountPopover = (props) => {
       router.push('/auth/login');
     },
     [onClose, signOut, router]
+=======
+  const auth = useAuth();
+
+  const handleSignOut = useCallback(
+    () => {
+      onClose?.();
+      auth.signOut();
+      router.push('/auth/login');
+    },
+    [onClose, auth, router]
+>>>>>>> f2c0da94f41ff23ab30a6bedc8aec818b4da28de
   );
 
   return (
@@ -46,7 +62,11 @@ export const AccountPopover = (props) => {
           color="text.secondary"
           variant="body2"
         >
+<<<<<<< HEAD
           {user && user.username} {/* Display the username of the authenticated user */}
+=======
+          Anika Visser
+>>>>>>> f2c0da94f41ff23ab30a6bedc8aec818b4da28de
         </Typography>
       </Box>
       <Divider />

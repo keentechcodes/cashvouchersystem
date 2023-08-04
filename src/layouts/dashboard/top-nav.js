@@ -65,12 +65,45 @@ export const TopNav = (props) => {
                 </SvgIcon>
               </IconButton>
             )}
+<<<<<<< HEAD
+=======
+{/*             <Tooltip title="Search">
+              <IconButton>
+                <SvgIcon fontSize="small">
+                  <MagnifyingGlassIcon />
+                </SvgIcon>
+              </IconButton>
+            </Tooltip> */}
+>>>>>>> f2c0da94f41ff23ab30a6bedc8aec818b4da28de
           </Stack>
           <Stack
             alignItems="center"
             direction="row"
             spacing={2}
           >
+<<<<<<< HEAD
+=======
+            {/* <Tooltip title="Contacts">
+              <IconButton>
+                <SvgIcon fontSize="small">
+                  <UsersIcon />
+                </SvgIcon>
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Notifications">
+              <IconButton>
+                <Badge
+                  badgeContent={4}
+                  color="success"
+                  variant="dot"
+                >
+                  <SvgIcon fontSize="small">
+                    <BellIcon />
+                  </SvgIcon>
+                </Badge>
+              </IconButton>
+            </Tooltip> */}
+>>>>>>> f2c0da94f41ff23ab30a6bedc8aec818b4da28de
             <Avatar
               onClick={accountPopover.handleOpen}
               ref={accountPopover.anchorRef}

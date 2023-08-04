@@ -2,7 +2,10 @@ import PropTypes from 'prop-types';
 import NextLink from 'next/link';
 import { Box, Typography, Unstable_Grid2 as Grid } from '@mui/material';
 import { Logo } from 'src/components/logo';
+<<<<<<< HEAD
 import { OamsPeople } from 'src/components/oams_people';
+=======
+>>>>>>> f2c0da94f41ff23ab30a6bedc8aec818b4da28de
 
 // TODO: Change subtitle text
 
@@ -89,6 +92,20 @@ export const Layout = (props) => {
                 One Agno Medical Solutions
               </Box>
             </Typography>
+<<<<<<< HEAD
+=======
+            <Typography
+              align="center"
+              sx={{ mb: 3 }}
+              variant="subtitle1"
+            >
+              A professional kit that comes with ready-to-use MUI components.
+            </Typography>
+            <img
+              alt=""
+              src="/assets/auth-illustration.svg"
+            />
+>>>>>>> f2c0da94f41ff23ab30a6bedc8aec818b4da28de
           </Box>
         </Grid>
       </Grid>
