@@ -27,7 +27,7 @@ CREATE table add_cash(
     replenished_by VARCHAR(255),
     date_of_entry DATE,
     receipt_path text,
-    cash_category VARCHAR(255) 
+    cash_category VARCHAR(255)
 );
 
 -- record expenses table for petty cash
@@ -37,7 +37,8 @@ CREATE TABLE record_expenses (
   date_of_entry DATE,
   expense_category VARCHAR(255),
   reimbursed_by VARCHAR(255),
-  receipt_path text
+  receipt_path text,
+  requested_by VARCHAR(255)
 );
 
 -- material request table

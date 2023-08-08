@@ -10,7 +10,7 @@ const MaterialRequestForm = () => {
     const { toggleRequestMade } = useRequests();
 
     const [formData, setFormData] = useState({
-        requestor: user.name,
+        requestor: "",
         date: new Date().toISOString().split("T")[0],
         designation: "",
         branch: "",
@@ -50,7 +50,7 @@ const handleSubmit = async (e) => {
     toggleRequestMade();
     // reset form data
     setFormData({
-      requestor: user.name,
+      requestor: "",
       date: new Date().toISOString().split("T")[0],
       designation: "",
       branch: "",
@@ -90,10 +90,8 @@ const handleSubmit = async (e) => {
                                     label="Requestor's Name"
                                     name="name"
                                     value={formData.requestor}
+                                    onChange={handleInputChange('requestor')}
                                     variant="outlined"
-                                    InputProps={{
-                                        readOnly: true,
-                                    }}
                                 />
                             </Grid>
                             <Grid item xs={12} md={6}>
