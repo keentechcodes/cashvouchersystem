@@ -2,6 +2,7 @@ import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRo
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useRequests } from 'src/contexts/RequestsContext';
+import { useAuth } from 'src/hooks/use-auth';
 
 function formatDate(inputDate) {
     const date = new Date(inputDate);
@@ -12,6 +13,7 @@ function formatDate(inputDate) {
 }
 
 const PastRequests = () => {
+    const { user } = useAuth();
     const [pastRequests, setPastRequests] = useState([]);
     const [open, setOpen] = useState(false);
     const [dialogData, setDialogData] = useState({ title: "", content: "" });
@@ -93,7 +95,9 @@ const PastRequests = () => {
                         <TableCell>Items</TableCell>
                         <TableCell>Total</TableCell>
                         <TableCell>Status</TableCell>
+                        {user && user.id === 1 && (
                         <TableCell>Actions</TableCell>
+                        )}
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -116,10 +120,12 @@ const PastRequests = () => {
             </TableCell>
                             <TableCell>₱{request.total}</TableCell>
                             <TableCell>{request.status}</TableCell>
-                            <TableCell>
-                                <Button color="success" onClick={() => handleRequestUpdate(request.id, 'Approved')}>Approve</Button>
-                                <Button color="error" onClick={() => handleRequestUpdate(request.id, 'Disapproved')}>Disapprove</Button>
-                            </TableCell>
+                            {user && user.id === 1 && (
+                <TableCell>
+                    <Button color="success" onClick={() => handleRequestUpdate(request.id, 'Approved')}>Approve</Button>
+                    <Button color="error" onClick={() => handleRequestUpdate(request.id, 'Disapproved')}>Disapprove</Button>
+                </TableCell>
+            )}
                         </TableRow>
                     ))}
                 </TableBody>

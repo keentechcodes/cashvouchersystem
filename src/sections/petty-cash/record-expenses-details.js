@@ -15,6 +15,7 @@ import {
   TextField,
   Unstable_Grid2 as Grid
 } from '@mui/material';
+import { useAuth } from 'src/hooks/use-auth';
 
 const expenseCategory = [
   {
@@ -72,6 +73,7 @@ const expenseCategory = [
 ];
 
 export const RecordExpensesDetails = () => {
+  const { user } = useAuth();
   const [values, setValues] = useState({
     amount: '',
     dateOfEntry: '',
@@ -104,7 +106,7 @@ export const RecordExpensesDetails = () => {
         formData.append('amount', values.amount);
         formData.append('dateOfEntry', values.dateOfEntry);
         formData.append('expenseCategory', values.expenseCategory);
-        formData.append('reimbursedBy', values.reimbursedBy);
+        formData.append('reimbursedBy', user.fullname);
         formData.append('selectedFile', selectedFile);
         formData.append('requestedBy', values.requestedBy);
 
@@ -159,7 +161,7 @@ export const RecordExpensesDetails = () => {
                   name="reimbursedBy"
                   onChange={handleChange}
                   required
-                  value={values.reimbursedBy}
+                  value={user.fullname}
                 />
               </Grid>
               <Grid xs={12} md={6}>

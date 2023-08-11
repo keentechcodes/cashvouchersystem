@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import { useAuth } from 'src/hooks/use-auth';
 import {
   FormControl,
   Select,
@@ -35,6 +36,7 @@ const cashCategory = [
 ];
 
 export const AddCashDetails = () => {
+  const { user } = useAuth();
   const [values, setValues] = useState({
     amount: '',
     dateOfEntry: '',
@@ -66,7 +68,7 @@ export const AddCashDetails = () => {
         const formData = new FormData();
         formData.append('amount', values.amount);
         formData.append('dateOfEntry', values.dateOfEntry);
-        formData.append('replenishedBy', values.replenishedBy);
+        formData.append('replenishedBy', user.fullname);
         formData.append('selectedFile', selectedFile); // Append the file to the FormData
         formData.append('cashCategory', values.cashCategory); // Correctly append cashCategory
 
@@ -121,7 +123,7 @@ export const AddCashDetails = () => {
                   name="replenishedBy"
                   onChange={handleChange}
                   required
-                  value={values.replenishedBy}
+                  value={user && user.fullname}
                 />
               </Grid>
               <Grid item xs={12} md={6}>

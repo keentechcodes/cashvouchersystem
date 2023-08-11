@@ -6,12 +6,14 @@ import SalaryDeductionTable from 'src/sections/advancerequest/SalaryDeductionTab
 import CashAdvanceTable from 'src/sections/advancerequest/CashAdvanceTable';
 import CashAdvanceApproval from 'src/pages/cashadvance/ca-approval';
 import { useAuth } from 'src/hooks/use-auth';
+// import { CashAdvanceProvider } from '../../contexts/CashAdvanceContext';
 
 const Page = () => {
   const { user } = useAuth();
 
   return (
     <>
+      {/* <CashAdvanceProvider> */}
       <Head>
         <title>
           Cash Advance Request Form | One Agno Medical Solutions
@@ -71,6 +73,7 @@ const Page = () => {
           </Stack>
         </Container>
       </Box>
+      {/* </CashAdvanceProvider> */}
     </>
   );
 };

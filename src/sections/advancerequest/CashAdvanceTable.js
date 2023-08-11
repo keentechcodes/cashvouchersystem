@@ -18,8 +18,10 @@ import {
 } from '@mui/material';
 import { useAuth } from 'src/hooks/use-auth';
 
+
 export const CashAdvanceTable = () => {
-  const [cashAdvanceRequests, setCashAdvanceRequests] = useState([]);
+  // const { cashAdvanceRequests, setCashAdvanceRequests } = useCashAdvanceData();
+const [cashAdvanceRequests, setCashAdvanceRequests] = useState([]);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -130,9 +132,9 @@ export const CashAdvanceTable = () => {
                   <Button
                     variant="contained"
                     style={{backgroundColor: '#7C0A02', color: '#fff'}}
-                    onClick={() => handleApprove(request.id)}
+                    onClick={() => handleDisapprove(request.id)}
                   >
-                    Dispprove
+                    Disapprove
                   </Button>
                   </TableCell>
                 </TableRow>

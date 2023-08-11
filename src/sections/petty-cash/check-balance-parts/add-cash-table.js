@@ -10,7 +10,6 @@ import {
   IconButton, // Step 1: Import IconButton
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete'; // Step 1: Import the DeleteIcon
-
 import { format } from 'date-fns';
 
 const tableHeight = 200; // Set the desired height for the table
