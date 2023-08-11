@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../db'); // assuming you have db.js file that sets up connection with the database
+const generatePDF = require(`../src/sections/materialrequest/generateMaterialPDF.js`)
 
 router.post('/', async (req, res) => {
   const { requestor, date, designation, branch, reason, items, total } = req.body;
@@ -273,9 +274,47 @@ router.delete('/:id', async (req, res) => {
   
 });
 
+router.get('/voucher/:id/data', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const voucherResult = await pool.query(`
+      SELECT 
+        v.*,
+        mr.*,
+        po.date AS po_date,
+        mri.*
+      FROM material_request_vouchers v
+      JOIN material_request_purchase_orders po ON v.purchase_order_id = po.id
+      JOIN material_requests mr ON po.material_request_id = mr.id
+      JOIN material_request_items mri ON mri.material_request_id = mr.id
+      WHERE v.id = $1
+    `, [id]);
 
+    if (voucherResult.rows.length === 0) {
+      res.status(404).json({ message: "Voucher not found" });
+      return;
+    }
 
+    res.status(200).json(voucherResult.rows);  // Return raw data as JSON
 
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+    console.log(error.message);
+  }
+});
+
+router.get('/voucher/:id/pdf', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const pdfBuffer = await generateMaterialPDF(id);
+        
+        res.contentType("application/pdf");
+        res.send(pdfBuffer);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+        console.log(error.message);
+    }
+});
 
 
 module.exports = router;

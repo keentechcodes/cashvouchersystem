@@ -20,6 +20,7 @@ app.use(bodyParser.json());
 app.use('/api/material_requests', materialRequestRoutes);
 app.use('/petty-cash', pettyCashRoutes);
 app.use('/reimbursements', reimbursementRoutes);
+app.use(express.static('public'));
 
 // API endpoint for getting approved orders of material requests
 app.get('/approved_orders', async (req, res) => {

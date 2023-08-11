@@ -12,24 +12,29 @@ const pool = new Pool({
 
 const app = express();
 const port = 3003;
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 
 app.use(express.json());
+const jwt = require('jsonwebtoken');
+const SECRET_KEY = 'YOUR_SECRET_KEY';
+
 
 // Function to retrieve user data from the database based on username and password
-// Function to retrieve user data from the database based on username and password
-async function getUserData(username, password) {
+async function getUserData(username) {
   try {
-    const query = 'SELECT * FROM users WHERE username = $1 AND password = $2';
-    const values = [username, password];
+    const query = 'SELECT * FROM users WHERE username = $1';
+    const values = [username];
     const result = await pool.query(query, values);
 
     if (result.rowCount === 1) {
-      // User credentials are valid, fetch all values from the table for that user
       const userData = result.rows[0];
       return userData;
     } else {
-      // User credentials are invalid, return null
       return null;
     }
   } catch (error) {
@@ -37,6 +42,7 @@ async function getUserData(username, password) {
     throw error;
   }
 }
+
 
 
 
@@ -70,15 +76,48 @@ app.post('/login', checkAuthentication, (req, res) => {
   const userData = req.userData;
 
   if (isAuthenticated) {
-    // User credentials are valid
+    const token = jwt.sign({ username: userData.username }, SECRET_KEY, { expiresIn: '1h' });
     console.log('Login successful:', userData.username);
-    return res.status(200).json({ isAuthenticated: true, userData });
+    return res.status(200).json({ isAuthenticated: true, token, user: userData }); // Add userData in the response
   } else {
-    // User credentials are invalid
     console.log('Invalid credentials');
     return res.status(401).json({ isAuthenticated: false });
   }
 });
 
-app.listen(port, () => console.log(`Server is running on port ${port}`));
 
+app.post('/validateToken', async (req, res) => {
+  console.log("Validating token...");
+
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+      console.error("Authorization header missing");
+      return res.status(401).send("Authorization header missing");
+  }
+
+  const token = authHeader.split(' ')[1];
+  console.log(`Received token: ${token.substring(0, 15)}...`); // Logs the beginning of the token for brevity
+  
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY);
+    console.log(`Token decoded successfully for user: ${decoded.username}`);
+
+    // Fetch user data using the username from the decoded payload
+    const userData = await getUserData(decoded.username);
+    if(userData) {
+        console.log(`User data retrieved for user: ${decoded.username}`);
+        res.json(userData);
+    } else {
+        console.error(`Invalid token or user ${decoded.username} does not exist`);
+        res.status(401).send("Invalid token or user does not exist");
+    }      
+  } catch (error) {
+      console.error("Error validating token:", error);
+      res.status(401).send("Invalid token");
+  }
+});
+
+
+
+
+app.listen(port, () => console.log(`Server is running on port ${port}`));

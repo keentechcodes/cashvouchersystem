@@ -1,6 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Typography, Box, Card, CardContent, CardHeader, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
 import axios from 'axios';
+import generateMaterialPDF from './generateMaterialPDF';
+
+function formatDate(inputDate) {
+    const date = new Date(inputDate);
+    const mm = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+    const dd = String(date.getDate()).padStart(2, '0');
+    const yyyy = date.getFullYear();
+    return `${mm}/${dd}/${yyyy}`;
+}
 
 const PurchaseOrderTable = () => {
   const [orders, setOrders] = useState([]);
@@ -24,6 +33,7 @@ const handleOrderSelect = async (order) => {
   try {
     const response = await axios.get(`http://localhost:5000/api/material_requests/${order.id}`);
     setSelectedOrder({...order, items: response.data.items});
+
   } catch (error) {
     console.error('Error fetching order details:', error);
   }
@@ -38,6 +48,22 @@ const handleOrderSelect = async (order) => {
     // Create voucher here
     const response = await axios.put(`http://localhost:5000/api/material_requests/po/${order.purchase_order_id}/convert`);
     console.log(`Voucher created for order ${order.id} with voucherId ${response.data.voucherId}`);
+    // Generate PDF for the voucher
+    const pdfBuffer = await generateMaterialPDF(response.data.voucherId);
+    console.log("PDF generated successfully:", pdfBuffer);
+
+    // Convert the PDF buffer to a Blob and create a URL for it
+    const blob = new Blob([pdfBuffer], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+
+    // Create a temporary anchor element to download the PDF
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `Voucher_${response.data.voucherId}.pdf`;
+    a.click();
+
+    URL.revokeObjectURL(url); // Free up the memory
+
   } catch (error) {
     console.error('Error creating voucher:', error);
   }
@@ -69,7 +95,7 @@ const handleOrderSelect = async (order) => {
   {orders.map((order, index) => (
     <TableRow key={index}>
       <TableCell>{order.purchase_order_id}</TableCell>
-      <TableCell>{order.date}</TableCell>
+      <TableCell>{formatDate(order.date)}</TableCell>
       <TableCell>{order.requestor}</TableCell>
       <TableCell>{order.designation}</TableCell>
       <TableCell>{order.branch}</TableCell>

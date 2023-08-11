@@ -2,6 +2,14 @@ import { useState, useEffect } from 'react';
 import { Box, Card, CardContent, CardHeader, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, CircularProgress } from '@mui/material';
 import axios from 'axios'; // Make sure axios is installed
 
+function formatDate(inputDate) {
+    const date = new Date(inputDate);
+    const mm = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+    const dd = String(date.getDate()).padStart(2, '0');
+    const yyyy = date.getFullYear();
+    return `${mm}/${dd}/${yyyy}`;
+}
+
 const MaterialVoucherTable = () => {
   const [vouchers, setVouchers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -62,7 +70,7 @@ const MaterialVoucherTable = () => {
               {vouchers.map((voucher, index) => (
                 <TableRow key={index}>
                   <TableCell>{voucher.id}</TableCell>
-                  <TableCell>{voucher.date}</TableCell>
+                  <TableCell>{formatDate(voucher.date)}</TableCell>
                   <TableCell>{voucher.requester}</TableCell>
                   <TableCell>{voucher.designation}</TableCell>
                   <TableCell>{voucher.branch}</TableCell>

@@ -5,7 +5,6 @@ const HANDLERS = {
   INITIALIZE: 'INITIALIZE',
   SIGN_IN: 'SIGN_IN',
   SIGN_OUT: 'SIGN_OUT',
-  
 };
 
 const initialState = {
@@ -20,30 +19,32 @@ const handlers = {
 
     return {
       ...state,
-      ...(
-        // if payload (user) is provided, then is authenticated
-        user
-          ? ({
+      ...(user ? {
             isAuthenticated: true,
             isLoading: false,
             user
-          })
-          : ({
+          } : {
             isLoading: false
           })
-      )
     };
   },
   [HANDLERS.SIGN_IN]: (state, action) => {
-    const { id, username } = action.payload;
-    console.log(`User signed in with id: ${id}, username: ${username}`);
+    if (!action.payload) {
+      console.error("SIGN_IN action called without a payload.");
+      return state;  // return unchanged state
+    }
 
+    const { id, username, fullname } = action.payload;
+    console.log(`User signed in with id: ${id}, username: ${username}`);
+  
     return {
       ...state,
       isAuthenticated: true,
+      isLoading: false, // Explicitly setting isLoading to false
       user: {
         id,
-        username
+        username,
+        fullname
       }
     };
   },
@@ -51,157 +52,116 @@ const handlers = {
     return {
       ...state,
       isAuthenticated: false,
+      isLoading: false, // Explicitly setting isLoading to false
       user: null
     };
   }
 };
 
-const reducer = (state, action) => (
-  handlers[action.type] ? handlers[action.type](state, action) : state
-);
+const reducer = (state, action) => {
+  const newState = handlers[action.type] ? handlers[action.type](state, action) : state;
+  console.log("Action:", action.type, "Old State:", state, "New State:", newState);
+  return newState;
+};
 
-// The role of this context is to propagate authentication state through the App tree.
 
-export const AuthContext = createContext({ undefined });
+export const AuthContext = createContext(undefined);
 
-export const AuthProvider = (props) => {
-  const { children } = props;
-  const [state, dispatch] = useReducer(reducer, initialState);
-  const initialized = useRef(false);
-
-  const initialize = async () => {
-    // Prevent from calling twice in development mode with React.StrictMode enabled
-    if (initialized.current) {
-      return;
-    }
-  
-    initialized.current = true;
-  
-    let isAuthenticated = false;
-  
-    try {
-      isAuthenticated = window.sessionStorage.getItem('authenticated') === 'true';
-    } catch (err) {
-      console.error(err);
-    }
-  
-    if (isAuthenticated) {
-      // User is authenticated, fetch user data from the server based on the stored credentials
-      try {
-        const response = await fetch('http://localhost:3003/getUserData', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
-  
-        if (!response.ok) {
-          throw new Error('Failed to fetch user data');
-        }
-  
-        const userData = await response.json();
-  
-        // Check if the fetched user data is not empty
-        if (userData.id && userData.avatar && userData.username) {
-          dispatch({
-            type: HANDLERS.SIGN_IN,
-            payload: {
-              id: userData.id,
-              avatar: userData.avatar,
-              username: userData.username
-            }
-          });
-        } else {
-          // User data is missing or invalid, treat as not authenticated
-          isAuthenticated = false;
-        }
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-        isAuthenticated = false;
+const validateToken = async (token, dispatch) => {
+  try {
+    const response = await fetch('http://localhost:3003/validateToken', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
       }
-    }
-  
-    // If not authenticated or error occurred while fetching data, initialize with default state
-    if (!isAuthenticated) {
+    });
+
+    if (response.ok) {
+      const userData = await response.json();
       dispatch({
-        type: HANDLERS.INITIALIZE
+        type: HANDLERS.SIGN_IN,
+        payload: {
+          id: userData.id,
+          username: userData.username,
+          fullname: userData.fullname
+        }
       });
+    } else {
+      window.localStorage.removeItem('authToken');
+      dispatch({ type: HANDLERS.SIGN_OUT });
+    }
+  } catch (error) {
+    console.error("Token validation error:", error);
+    window.localStorage.removeItem('authToken');
+    dispatch({ type: HANDLERS.SIGN_OUT });
+  }
+};
+
+export const AuthProvider = ({ children }) => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  // Moved initialize function out of useEffect
+  const initialize = async () => {
+    try {
+      const authToken = window.localStorage.getItem('authToken');
+      if (authToken) {
+        await validateToken(authToken, dispatch);  // Changed the function call here
+        return;
+      }
+      dispatch({ type: HANDLERS.INITIALIZE });
+    } catch (error) {
+      console.error("Initialization error:", error);
+      dispatch({ type: HANDLERS.SIGN_OUT });
     }
   };
 
-  useEffect(
-    () => {
-      initialize();
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
+  useEffect(() => {
+    console.log("Running initialization");
+    initialize().then(() => {
+      console.log("Initialization finished");
+    });
+  }, []);
+  
 
   const signIn = async (username, password) => {
     try {
-      // Fetch user data from the table using username and password
       const response = await fetch('http://localhost:3003/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          username,
-          password
-        })
+        body: JSON.stringify({ username, password })
       });
   
-      if (!response.ok) {
-        throw new Error('Failed to authenticate');
-      }
+      const responseData = await response.json(); 
   
-      const data = await response.json();
-  
-      console.log('Data received from backend:', data); // Add this log
-  
-      if (data.isAuthenticated) {
-        // User credentials are valid, set isAuthenticated to true
-        window.sessionStorage.setItem('authenticated', 'true');
-  
+      if (response.ok && responseData.user) {
+        const { token, user } = responseData;
+        window.localStorage.setItem('authToken', token);
         dispatch({
           type: HANDLERS.SIGN_IN,
-          payload: {
-            id: data.id,
-            username: data.username,
-            fullname: data.fullname
-          }
+          payload: user
         });
-  
-        return data; // Return the data received from the backend
+        return true;
       } else {
-        // User credentials are invalid
-        throw new Error('Please check your username and password');
+        console.error('Login failed.');
+        return false;
       }
     } catch (error) {
       console.error('Error during login:', error);
-      throw error;
+      return false;
     }
   };
   
-  const signUp = async (email, name, password) => {
-    throw new Error('Sign up is not implemented');
-  };
 
   const signOut = () => {
-    // Clear the user data from sessionStorage
-    try {
-      window.sessionStorage.removeItem('authenticated');
-    } catch (err) {
-      console.error(err);
-    }
-
-    dispatch({
-      type: HANDLERS.SIGN_OUT
-    });
+    window.localStorage.removeItem('authToken');
+    dispatch({ type: HANDLERS.SIGN_OUT });
   };
 
   return (
-    <AuthContext.Provider value={{ ...state, signIn, signUp, signOut, dispatch }}>
+    <AuthContext.Provider value={{ ...state, signIn, signOut, dispatch }}>
       {children}
     </AuthContext.Provider>
   );

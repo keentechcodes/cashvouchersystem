@@ -16,9 +16,11 @@ import {
   TableBody,
   Button,
 } from '@mui/material';
+import { useAuth } from 'src/hooks/use-auth';
 
 export const CashAdvanceTable = () => {
   const [cashAdvanceRequests, setCashAdvanceRequests] = useState([]);
+  const { user } = useAuth();
 
   useEffect(() => {
     // Fetch data from the backend API endpoint
@@ -101,6 +103,7 @@ export const CashAdvanceTable = () => {
           <Table>
             <TableHead>
               <TableRow>
+                <TableCell>Applicant Name</TableCell>
                 <TableCell>Date Borrowed</TableCell>
                 <TableCell>Amount</TableCell>
                 <TableCell>Term</TableCell>
@@ -111,25 +114,26 @@ export const CashAdvanceTable = () => {
             <TableBody>
               {cashAdvanceRequests.map((request) => (
                 <TableRow key={request.id}>
+                  <TableCell>{request.name}</TableCell>
                   <TableCell>{formatDate(request.date_borrowed)}</TableCell>
                   <TableCell>₱{request.amount}</TableCell>
                   <TableCell>{request.terms}</TableCell>
                   <TableCell>{request.status}</TableCell>
                   <TableCell>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => handleApprove(request.id)}
-                    >
-                      Approve
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      onClick={() => handleDisapprove(request.id)}
-                    >
-                      Disapprove
-                    </Button>
+                  <Button
+                    variant="contained"
+                    style={{backgroundColor: '#0B6623', color: '#fff',marginRight: '10px'}}
+                    onClick={() => handleApprove(request.id)}
+                  >
+                    Approve
+                  </Button>
+                  <Button
+                    variant="contained"
+                    style={{backgroundColor: '#7C0A02', color: '#fff'}}
+                    onClick={() => handleApprove(request.id)}
+                  >
+                    Dispprove
+                  </Button>
                   </TableCell>
                 </TableRow>
               ))}

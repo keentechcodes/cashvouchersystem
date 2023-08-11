@@ -1,5 +1,5 @@
 // login.js
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
@@ -21,6 +21,7 @@ import { useAuth } from 'src/hooks/use-auth';
 import { Layout as AuthLayout } from 'src/layouts/auth/layout';
 
 const Page = () => {
+  const { validateToken } = useAuth();
   const router = useRouter();
   const auth = useAuth();
   const formik = useFormik({
@@ -41,27 +42,29 @@ const Page = () => {
     }),
     onSubmit: async (values, helpers) => {
       try {
-        const response = await auth.signIn(values.username, values.password);
-
-        if (response.isAuthenticated) {
-          // User credentials are valid, set isAuthenticated to true
-          window.sessionStorage.setItem('authenticated', 'true');
-
-          // No need to use the dispatch function here, the signIn function in the auth context already updates the state
-          
-          router.push('/petty-cash');
+        const isSuccessful = await auth.signIn(values.username, values.password);
+        if (isSuccessful) {
+            router.push('/petty-cash');
         } else {
-          // User credentials are invalid
-          throw new Error('Please check your username and password');
+            throw new Error('Please check your username and password');
         }
       } catch (err) {
         helpers.setStatus({ success: false });
         helpers.setErrors({ submit: err.message });
         helpers.setSubmitting(false);
       }
-    }
+    }    
   });
 
+  useEffect(() => {
+    const token = window.localStorage.getItem('authToken');
+    if (token) {
+      validateToken(token);
+    }
+  }, []);
+  
+ 
+  
   return (
     <>
       <Head>
@@ -93,21 +96,6 @@ const Page = () => {
             >
               <Typography variant="h4">
                 Login
-              </Typography>
-              <Typography
-                color="text.secondary"
-                variant="body2"
-              >
-                Don&apos;t have an account?
-                &nbsp;
-                <Link
-                  component={NextLink}
-                  href="/auth/register"
-                  underline="hover"
-                  variant="subtitle2"
-                >
-                  Register
-                </Link>
               </Typography>
             </Stack>
               <form

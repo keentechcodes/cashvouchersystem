@@ -58,6 +58,28 @@ app.get('/api/cash-advance-requests', async (req, res) => {
     }
   });
 
+  app.get('/api/cash-advance-requests/:name', async (req, res) => {
+    try {
+      // Get the full name from the request parameters
+      const { name } = req.params;
+      console.log('Fetching cash advance requests for:', name);
+  
+      // Perform the database query to fetch cash advance requests for the specified user
+      const query = `
+        SELECT * FROM cash_advance_requests WHERE name = $1;
+      `;
+      const result = await pool.query(query, [name]);
+  
+      // Respond with the fetched data
+      res.json(result.rows);
+    } catch (error) {
+      console.error('Error fetching cash advance requests:', error);
+      res.status(500).json({ error: 'Something went wrong!' });
+    }
+  });
+  
+
+
   app.put('/api/cash-advance-requests/:id', async (req, res) => {
     try {
       const { id } = req.params;

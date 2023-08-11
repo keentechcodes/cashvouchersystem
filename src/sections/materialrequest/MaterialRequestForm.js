@@ -1,6 +1,6 @@
 import { Box, TextField, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Collapse, Card, CardContent, CardHeader, Grid, Divider } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from 'src/hooks/use-auth';
 import axios from 'axios';
 import { useRequests } from 'src/contexts/RequestsContext';
@@ -18,6 +18,16 @@ const MaterialRequestForm = () => {
         items: [{ qty: "", unit: "", specification: "", amount: "" }],
         total: ""
     });
+
+    useEffect(() => {
+    if (user && user.fullname) {
+        setFormData(prevData => ({
+            ...prevData,
+            requestor: user.fullname
+        }));
+    }
+}, [user]);
+
 
     const [open, setOpen] = useState(false);
     const [error, setError] = useState("");
@@ -86,13 +96,15 @@ const handleSubmit = async (e) => {
                         <Grid container spacing={2}>
                             <Grid item xs={12} md={6}>
                                 <TextField
-                                    fullWidth
-                                    label="Requestor's Name"
-                                    name="name"
-                                    value={formData.requestor}
-                                    onChange={handleInputChange('requestor')}
-                                    variant="outlined"
-                                />
+    fullWidth
+    label="Requestor's Name"
+    name="name"
+    value={formData.requestor}
+    onChange={handleInputChange('requestor')}
+    variant="outlined"
+    disabled
+/>
+
                             </Grid>
                             <Grid item xs={12} md={6}>
                                 <TextField

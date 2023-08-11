@@ -3,6 +3,14 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useRequests } from 'src/contexts/RequestsContext';
 
+function formatDate(inputDate) {
+    const date = new Date(inputDate);
+    const mm = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+    const dd = String(date.getDate()).padStart(2, '0');
+    const yyyy = date.getFullYear();
+    return `${mm}/${dd}/${yyyy}`;
+}
+
 const PastRequests = () => {
     const [pastRequests, setPastRequests] = useState([]);
     const [open, setOpen] = useState(false);
@@ -42,6 +50,7 @@ const PastRequests = () => {
   fetchRequests();
 }, [requestMade]); 
 
+
     const handleRequestUpdate = async (requestId, status) => {
         try {
             await axios.put(`http://localhost:5000/api/material_requests/${requestId}/approve`);
@@ -56,6 +65,7 @@ const PastRequests = () => {
             console.error('Error updating request status:', error);
         }
     };
+
 
     return (
         <>
@@ -91,7 +101,7 @@ const PastRequests = () => {
                         <TableRow key={request.id}>
                             <TableCell>{request.id}</TableCell>
                             <TableCell>{request.requestor}</TableCell>
-                            <TableCell>{request.date}</TableCell>
+                            <TableCell>{formatDate(request.date)}</TableCell>
                             <TableCell>{request.designation}</TableCell>
                             <TableCell>{request.branch}</TableCell>
                             <TableCell>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Button,
   TextField,
@@ -15,8 +15,10 @@ import {
   CardHeader,
   Divider,
 } from '@mui/material';
+import { useAuth } from 'src/hooks/use-auth';
 
 const ExpenseForm = () => {
+  const { user } = useAuth();
   const [name, setName] = useState('Anika Visser');
   const [area, setArea] = useState('');
   const [dateRange, setDateRange] = useState([null, null]);
@@ -42,6 +44,13 @@ const ExpenseForm = () => {
       total: 0,
     },
   ]);
+
+  useEffect(() => {
+    if (user && user.fullname) {
+        setName(user.fullname);
+    }
+}, [user]);
+
 
   const addSubLocation = (index) => {
     const newFields = [...fields];
@@ -221,12 +230,13 @@ const removeSubLocation = (mainIndex, subIndex) => {
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={4}>
                   <TextField
-                    label='Name'
-                    value={name}
-                    InputProps={{ readOnly: true }}
-                    fullWidth
-                    margin='normal'
-                  />
+    label='Name'
+    value={name}
+    InputProps={{ readOnly: true }}
+    fullWidth
+    margin='normal'
+/>
+
                 </Grid>
                 <Grid item xs={12} sm={4}>
                   <TextField

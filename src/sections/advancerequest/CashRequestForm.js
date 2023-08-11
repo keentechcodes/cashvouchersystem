@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -13,8 +13,16 @@ import {
   Typography,
   MenuItem
 } from '@mui/material';
+import { useAuth } from 'src/hooks/use-auth';
+
+
 
 export const CashRequestForm = () => {
+  const { user } = useAuth();
+
+  console.log('user:', user); // Log the user data to see if it's available
+  console.log('open:', open);
+
   const [values, setValues] = useState({
     name: '',
     dateBorrowed: '',
@@ -31,6 +39,18 @@ export const CashRequestForm = () => {
       [event.target.name]: event.target.value
     });
   };
+
+  useEffect(() => {
+    console.log(user);
+    if (user && user.fullname) {
+      setValues((prevValues) => ({
+        ...prevValues,
+        name: user.fullname
+      }));
+    }
+  }, [user]); // Add user here in the dependency array
+  
+  
 
   const handleCheckboxChange = (event) => {
     setValues({ ...values, [event.target.name]: event.target.checked });
@@ -75,18 +95,18 @@ export const CashRequestForm = () => {
   return (
     <form onSubmit={handleSubmit}>
       <Card sx={{ width: '100%' }}>
-        <CardHeader title="Cash Advance Form" />
-        <Divider />
-        <CardContent>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
-            <TextField
+                <CardHeader title="Cash Advance Form" />
+                <Divider />
+                <CardContent>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} md={6}>
+              <TextField
                 fullWidth
                 label="Name"
                 name="name"
                 variant="outlined"
-                value={values.name}
-                onChange={handleChange} // Add this to update the name in the state
+                value={user && user.fullname}
+                disabled // Add this
               />
             </Grid>
             <Grid item xs={12} md={6}>

@@ -10,6 +10,9 @@ import { createTheme } from 'src/theme';
 import { createEmotionCache } from 'src/utils/create-emotion-cache';
 import 'simplebar-react/dist/simplebar.min.css';
 import { RequestsProvider } from 'src/contexts/RequestsContext';
+import { CircularProgress, Box } from '@mui/material';
+import ErrorBoundary from '/error-boundary';
+
 
 // Inside MyApp component
 
@@ -17,7 +20,16 @@ import { RequestsProvider } from 'src/contexts/RequestsContext';
 
 const clientSideEmotionCache = createEmotionCache();
 
-const SplashScreen = () => null;
+const SplashScreen = () => (
+  <Box 
+    display="flex"
+    justifyContent="center"
+    alignItems="center"
+    height="100vh"  // ensures the spinner is in the center of the viewport
+  >
+    <CircularProgress />
+  </Box>
+);
 
 const App = (props) => {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
@@ -40,22 +52,26 @@ const App = (props) => {
         />
       </Head>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <AuthProvider>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <RequestsProvider> {/* Add this */}
-              <AuthConsumer>
-                {
-                  (auth) => auth.isLoading
-                    ? <SplashScreen />
-                    : getLayout(<Component {...pageProps} />)
-                }
-              </AuthConsumer>
-            </RequestsProvider> {/* Add this */}
-          </ThemeProvider>
-        </AuthProvider>
-      </LocalizationProvider>
-    </CacheProvider>
+      <AuthProvider>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <RequestsProvider>
+            <AuthConsumer>
+              {(auth) =>
+                auth.isLoading ? (
+                  <SplashScreen />
+                ) : (
+                  <ErrorBoundary>
+                    {getLayout(<Component {...pageProps} />)}
+                  </ErrorBoundary>
+                )
+              }
+            </AuthConsumer>
+          </RequestsProvider>
+        </ThemeProvider>
+      </AuthProvider>
+    </LocalizationProvider>
+  </CacheProvider>
   );
 };
 
